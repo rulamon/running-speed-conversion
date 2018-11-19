@@ -1,15 +1,27 @@
-function toSeconds(str) {
-	let timeArr = str.split(":");
-	let firstHalf = parseInt(timeArr[0]) * 60;
-	let secondHalf = parseInt(timeArr[1]);
-	return firstHalf + secondHalf;
-};
+function toSec(str) {
+	//put data into array
+	let timeArr = str.split(":").map(x => parseInt(x));
+	//minutes to seconds
+	timeArr[0] *= 60;
+	//add up all seconds & return
+	return timeArr[0] + timeArr[1];
+}
+
+function toMinSec(num) {
+	//convert to mm:ss, negative slice for double digits after ":"
+	return `${Math.floor(num / 60)}:${("0" + (num % 60)).slice(-2)}`
+}
 
 function toKmPerHour(str) {
-	if (/^\d{0,2}:\d{2}$/.test(str)) {
-		return Math.round((1 / toSeconds(str) * 3600) * 100) / 100 + "km/h";
+	//for input mm:ss
+	if (/^\d{1,2}:\d{2}$/.test(str)) {
+		return `${(1 / toSec(str) * 3600).toFixed(2)} km/h`;
 	} else {
-		return "Input format must be mm:ss of m:ss"
-	};
+	//for input x km/h	
+		if (/^\d{2}$/.test(str)) {
+			return toMinSec(3600 / parseInt(str));
+		}
+	//for other input
+		return "Input format must be (m)m:ss or number (km/h)"
+	}
 }
-console.log(toKmPerHour("5:00"));
